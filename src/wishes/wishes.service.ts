@@ -82,4 +82,10 @@ export class WishesService {
     delete wish.id;
     return await this.wishesRepository.save(wish);
   }
+
+  async findMany(key: string, param: any) {
+    return await this.wishesRepository.findBy({
+      [key]: param,
+    });
+  }
 }

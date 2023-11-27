@@ -1,11 +1,24 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Controller, Get, Body, Patch, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  UseGuards,
+  Req,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { WishesService } from 'src/wishes/wishes.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly wishesService: WishesService,
+  ) {}
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
@@ -21,5 +34,30 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   async update(@Req() req, @Body() body) {
     return this.usersService.update(req.user, body);
+  }
+
+  @Get('me/wishes')
+  @UseGuards(JwtAuthGuard)
+  async getMeWishes(@Req() req) {
+    const users = await this.usersService.findWishes(req.user.id);
+    const wishes = users.map((user) => user.wishes);
+    return wishes[0];
+  }
+
+  @Get(':username')
+  @UseGuards(JwtAuthGuard)
+  async getUser(@Param('username') username) {
+    return this.usersService.findOne('username', username);
+  }
+
+  @Get(':username/wishes')
+  @UseGuards(JwtAuthGuard)
+  async getUsersWishes(@Param('username') username) {
+    return this.wishesService.findMany('owner', { username });
+  }
+
+  @Post('find')
+  async findUsers(@Body('query') query: string) {
+    return this.usersService.findMany(query);
   }
 }

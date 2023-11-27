@@ -8,7 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import * as bycrypt from 'bcrypt';
 
 @Injectable()
@@ -61,5 +61,20 @@ export class UsersService {
     } catch (_) {
       throw new BadRequestException('Ошибка валидации переданных значений');
     }
+  }
+
+  async findWishes(id: number) {
+    const users = await this.usersRepository.find({
+      relations: { wishes: true },
+      where: { id },
+    });
+    return users;
+  }
+
+  async findMany(query: string) {
+    const searchResult = await this.usersRepository.find({
+      where: [{ email: Like(`%${query}%`) }, { username: Like(`%${query}%`) }],
+    });
+    return searchResult;
   }
 }
