@@ -19,7 +19,7 @@ export class UsersController {
 
   @Patch('me')
   @UseGuards(JwtAuthGuard)
-  update(@Req() req, @Body() body) {
+  async update(@Req() req, @Body() body) {
     return this.usersService.update(req.user, body);
   }
 }
