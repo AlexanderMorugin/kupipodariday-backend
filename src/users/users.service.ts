@@ -2,6 +2,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,7 +19,7 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async findOne(key: string, param: any) {
+  async findOne(key: string, param: any): Promise<User> {
     const user = await this.usersRepository.findOneBy({ [key]: param });
 
     return user;
@@ -28,11 +29,34 @@ export class UsersService {
     return bycrypt.hash(password, 10);
   }
 
-  async create(createUserDto: CreateUserDto) {
-    createUserDto.password = await this.hashPassword(createUserDto?.password);
-    const user = await this.usersRepository.save(createUserDto);
+  async findUserByName(username: string) {
+    return await this.usersRepository.findOne({
+      where: {
+        username: username,
+      },
+    });
+  }
 
-    return { user };
+  async findByEmail(email: string) {
+    return await this.usersRepository.findOneBy({ email });
+  }
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const username = await this.findUserByName(createUserDto.username);
+    const email = await this.findByEmail(createUserDto.email);
+    if (username !== null) {
+      throw new ForbiddenException(
+        'Пользователь с таким именем уже существует',
+      );
+    }
+    if (email) {
+      throw new ForbiddenException(
+        'Пользователь с таким e-mail уже существует',
+      );
+    }
+    createUserDto.password = await this.hashPassword(createUserDto?.password);
+    const user = this.usersRepository.create(createUserDto);
+    return await this.usersRepository.save(user);
   }
 
   async update(user: User, updateUserDto: UpdateUserDto) {

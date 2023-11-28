@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UsersModule,
     WishesModule,
     OffersModule,
@@ -29,7 +30,6 @@ import { AuthModule } from './auth/auth.module';
       }),
       inject: [ConfigService],
     }),
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [],

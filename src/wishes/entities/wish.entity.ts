@@ -1,9 +1,11 @@
 import {
   IsDate,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsString,
   IsUrl,
+  Length,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -20,11 +22,61 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  VirtualColumn,
 } from 'typeorm';
+
+
+// @Entity()
+// export class Wish {
+//   @PrimaryGeneratedColumn()
+//   id: number;
+
+//   @CreateDateColumn()
+//   createdAt: Date;
+
+//   @UpdateDateColumn()
+//   updatedAt: Date;
+
+//   @Column()
+//   @Length(1, 250)
+//   name: string;
+
+//   @Column()
+//   @IsUrl()
+//   link: string;
+
+//   @Column()
+//   @IsUrl()
+//   image: string;
+
+//   @Column({ type: 'decimal', scale: 2 })
+//   price: number;
+
+//   @VirtualColumn({
+//     query: (alias) =>
+//       `SELECT SUM(amount) FROM offer WHERE "itemId" = ${alias}.id`,
+//     type: 'numeric',
+//   })
+//   raised: number;
+
+//   @ManyToOne(() => User, (user) => user.wishes)
+//   owner: User;
+
+//   @Column()
+//   @Length(1, 1024)
+//   description: string;
+
+//   @OneToMany(() => Offer, (offer) => offer.item)
+//   offers: Offer[];
+
+//   @Column({ default: 0 })
+//   copied: number;
+// }
 
 @Entity()
 export class Wish {
   @PrimaryGeneratedColumn({ name: 'wish_id' })
+  // @IsInt()
   id: number;
 
   @Column()
@@ -95,10 +147,10 @@ export class Wish {
   copied: number;
 
   @CreateDateColumn()
-  @IsDate()
+  // @IsDate()
   createdAt: Date;
 
   @UpdateDateColumn()
-  @IsDate()
+  // @IsDate()
   updatedAt: Date;
 }

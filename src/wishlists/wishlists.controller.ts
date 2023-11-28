@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { WishlistsService } from './wishlists.service';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Wishlist } from './entities/wishlist.entity';
 
-@Controller('wishlists')
+@Controller('wishlistlists')
 export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 
-  @Post()
-  create(@Body() createWishlistDto: CreateWishlistDto) {
-    return this.wishlistsService.create(createWishlistDto);
-  }
-
   @Get()
-  findAll() {
+  async getAll(): Promise<Wishlist[]> {
     return this.wishlistsService.findAll();
   }
 
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  async create(
+    @Body() createWishlistDto: CreateWishlistDto,
+    @Req() req,
+  ): Promise<Wishlist> {
+    return this.wishlistsService.create(createWishlistDto, req.user);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.wishlistsService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  async getOne(@Param('id') id: number): Promise<Wishlist> {
+    return this.wishlistsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWishlistDto: UpdateWishlistDto) {
-    return this.wishlistsService.update(+id, updateWishlistDto);
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Body() updateWishlistDto: UpdateWishlistDto,
+    @Param('id') id: number,
+    @Req() req,
+  ): Promise<Wishlist> {
+    return this.wishlistsService.updateOne(id, updateWishlistDto, req.user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.wishlistsService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  async delete(@Param('id') id: number, @Req() req): Promise<Wishlist> {
+    return this.wishlistsService.remove(id, req.user);
   }
 }

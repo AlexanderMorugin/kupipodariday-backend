@@ -13,6 +13,7 @@ import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Wish } from './entities/wish.entity';
 
 @Controller('wishes')
 export class WishesController {
@@ -20,22 +21,25 @@ export class WishesController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async create(@Body() createWishDto: CreateWishDto, @Req() req) {
+  async create(
+    @Body() createWishDto: CreateWishDto,
+    @Req() req,
+  ): Promise<Wish> {
     return this.wishesService.create(createWishDto, req?.user);
   }
 
   @Get('last')
-  async getLast() {
+  async getLast(): Promise<Wish[]> {
     return this.wishesService.findByOrder({ createdAt: 'DESC' }, 40);
   }
 
   @Get('top')
-  async getTop() {
+  async getTop(): Promise<Wish[]> {
     return this.wishesService.findByOrder({ copied: 'DESC' }, 20);
   }
 
   @Get(':id')
-  async get(@Param('id') id: number) {
+  async get(@Param('id') id: number): Promise<Wish> {
     return this.wishesService.findOne(id);
   }
 

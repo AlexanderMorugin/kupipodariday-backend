@@ -21,23 +21,26 @@ export class Offer {
   @ManyToOne(() => Wish, (wish) => wish.offers)
   item: Wish;
 
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-  })
-  @IsNumber()
+  // @Column({
+  //   type: 'decimal',
+  //   precision: 10,
+  //   scale: 2,
+  // })
+  // @IsNumber()
+  // amount: number;
+
+  @Column({ type: 'decimal', scale: 2 })
   amount: number;
 
   @Column({ default: false })
-  @IsBoolean()
+  // @IsBoolean()
   hidden: boolean;
 
   @CreateDateColumn()
-  @IsDate()
+  // @IsDate()
   createdAt: Date;
 
   @UpdateDateColumn()
-  @IsDate()
+  // @IsDate()
   updatedAt: Date;
 }

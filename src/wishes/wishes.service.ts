@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
-import { FindOptionsOrder, Repository } from 'typeorm';
+import { FindOptionsOrder, In, Repository } from 'typeorm';
 import { Wish } from './entities/wish.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
@@ -87,5 +87,15 @@ export class WishesService {
     return await this.wishesRepository.findBy({
       [key]: param,
     });
+  }
+
+  async findManyById(ids: number[]) {
+    return await this.wishesRepository.findBy({
+      id: In(ids),
+    });
+  }
+
+  async updateByRise(id: number, newRise: number) {
+    return await this.wishesRepository.update({ id: id }, { raised: newRise });
   }
 }
