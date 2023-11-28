@@ -15,12 +15,6 @@ export class WishlistsService {
     private readonly wishesService: WishesService,
   ) {}
 
-  // async findAll() {
-  //   return await this.wishlistsRepository.find({
-  //     relations: { items: true },
-  //   });
-  // }
-
   async findAll() {
     const wishlists = await this.wishlistsRepository.find({
       relations: ['owner', 'items'],
@@ -46,13 +40,6 @@ export class WishlistsService {
       items,
     });
   }
-
-  // async findOne(id: number) {
-  //   return await this.wishlistsRepository.findOne({
-  //     relations: { items: true },
-  //     where: { id },
-  //   });
-  // }
 
   async findOne(id: number) {
     const wishlist = await this.wishlistsRepository.findOne({

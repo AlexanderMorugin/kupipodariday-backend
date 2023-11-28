@@ -1,8 +1,8 @@
 {
-  "name": "server",
+  "name": "kupipodariday-backend",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Александр Моругин",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

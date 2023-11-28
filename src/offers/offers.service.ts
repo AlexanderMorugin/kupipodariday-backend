@@ -1,11 +1,9 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Offer } from './entities/offer.entity';
 import { Repository } from 'typeorm';
@@ -55,8 +53,6 @@ export class OffersService {
     }
     return offer;
   }
-  //   return await this.offerRepository.findBy({ id });
-  // }
 
   async findMany(): Promise<Offer[]> {
     return await this.offerRepository.find();

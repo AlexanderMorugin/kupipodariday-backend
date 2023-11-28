@@ -9,7 +9,6 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  // imports: [TypeOrmModule.forFeature([Wishlist]), WishesModule],
   imports: [
     TypeOrmModule.forFeature([Wishlist, Wish, User]),
     UsersModule,
@@ -17,6 +16,5 @@ import { UsersModule } from 'src/users/users.module';
   ],
   controllers: [WishlistsController],
   providers: [WishlistsService],
-  // exports: [WishlistsService],
 })
 export class WishlistsModule {}

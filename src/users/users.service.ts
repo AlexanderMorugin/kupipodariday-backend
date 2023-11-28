@@ -83,7 +83,9 @@ export class UsersService {
       });
       return updUser;
     } catch (_) {
-      throw new BadRequestException('Ошибка валидации переданных значений');
+      throw new BadRequestException(
+        'Пользователь может редактировать только свой профиль',
+      );
     }
   }
 

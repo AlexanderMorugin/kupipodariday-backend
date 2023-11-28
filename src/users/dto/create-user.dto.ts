@@ -21,12 +21,6 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
-  // @MinLength(2, {
-  //   message: 'Информация о себе должна быть не менее 2 символов',
-  // })
-  // @MaxLength(200, {
-  //   message: 'Информация о себе должна быть не более 200 символов',
-  // })  
   about: string;
 
   @IsOptional()
