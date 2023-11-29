@@ -39,6 +39,7 @@ export class WishesController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async get(@Param('id') id: number): Promise<Wish> {
     return this.wishesService.findOne(id);
   }
@@ -49,19 +50,19 @@ export class WishesController {
     @Param('id') id: number,
     @Body() updateWishDto: UpdateWishDto,
     @Req() req,
-  ) {
+  ): Promise<Wish[]> {
     return this.wishesService.update(id, updateWishDto, req.user.id);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: number, @Req() req) {
+  async delete(@Param('id') id: number, @Req() req): Promise<Wish> {
     return this.wishesService.delete(id, req.user.id);
   }
 
   @Post(':id/copy')
   @UseGuards(JwtAuthGuard)
-  async copy(@Param('id') id: number, @Req() req) {
+  async copy(@Param('id') id: number, @Req() req): Promise<Wish> {
     return this.wishesService.copy(id, req.user);
   }
 }

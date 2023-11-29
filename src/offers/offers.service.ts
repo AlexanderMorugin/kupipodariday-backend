@@ -18,7 +18,7 @@ export class OffersService {
     private readonly wishesService: WishesService,
   ) {}
 
-  async create(createOfferDto: CreateOfferDto, user: User) {
+  async create(createOfferDto: CreateOfferDto, user: User): Promise<Offer> {
     const wishes = await this.wishesService.findOne(createOfferDto.itemId);
     const wish = await this.wishesService.findOne(wishes.id);
     const sum = wish.price - wish.raised;

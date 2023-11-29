@@ -1,20 +1,16 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
-import * as bycrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { HashService } from 'src/hash/hash.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
+    private readonly hashService: HashService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -39,17 +35,8 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<User> {
     const existUser = await this.usersService.findOne('username', username);
 
-    if (!existUser)
-      throw new BadRequestException(
-        'Пользователя с таким Юзернейм не существует',
-      );
-
-    const passwordIsMatches = await bycrypt.compare(
-      password,
-      existUser.password,
-    );
-    if (!passwordIsMatches)
-      throw new UnauthorizedException('Некорректная пара логин и пароль');
+    if (!existUser || !this.hashService.compare(password, existUser.password))
+      return null;
 
     return existUser;
   }

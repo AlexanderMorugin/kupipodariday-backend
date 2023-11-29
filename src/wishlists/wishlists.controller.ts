@@ -20,6 +20,7 @@ export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async getAll(): Promise<Wishlist[]> {
     return this.wishlistsService.findAll();
   }

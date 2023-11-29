@@ -15,7 +15,7 @@ export class WishlistsService {
     private readonly wishesService: WishesService,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<Wishlist[]> {
     const wishlists = await this.wishlistsRepository.find({
       relations: ['owner', 'items'],
     });
@@ -27,7 +27,10 @@ export class WishlistsService {
     return wishlists;
   }
 
-  async create(createWishlistDto: CreateWishlistDto, owner: User) {
+  async create(
+    createWishlistDto: CreateWishlistDto,
+    owner: User,
+  ): Promise<Wishlist> {
     const items = [];
     const { image, name } = createWishlistDto;
     for (const itemId of createWishlistDto.itemsId) {
@@ -41,7 +44,7 @@ export class WishlistsService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Wishlist> {
     const wishlist = await this.wishlistsRepository.findOne({
       where: { id },
       relations: ['owner', 'items'],
@@ -58,7 +61,7 @@ export class WishlistsService {
     id: number,
     updateWishlistDto: UpdateWishlistDto,
     user: User,
-  ) {
+  ): Promise<Wishlist> {
     const wishlist = await this.wishlistsRepository.findOne({
       where: { id },
       relations: { owner: true, items: true },
@@ -87,7 +90,7 @@ export class WishlistsService {
     });
   }
 
-  async remove(id: number, user: User) {
+  async remove(id: number, user: User): Promise<Wishlist> {
     const wishlist = await this.wishlistsRepository.findOne({
       where: { id },
       relations: { owner: true },

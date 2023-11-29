@@ -7,11 +7,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { HashModule } from 'src/hash/hash.module';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
+    HashModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configServise: ConfigService) => ({

@@ -10,6 +10,7 @@ import {
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Offer } from './entities/offer.entity';
 
 @Controller('offers')
 export class OffersController {
@@ -17,18 +18,22 @@ export class OffersController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async create(@Body() createOfferDto: CreateOfferDto, @Req() req) {
+  async create(
+    @Body() createOfferDto: CreateOfferDto,
+    @Req() req,
+  ): Promise<Offer> {
     return this.offersService.create(createOfferDto, req.user);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getAll() {
+  async getAll(): Promise<Offer[]> {
     return this.offersService.findMany();
   }
 
   @Get(':id')
-  async getOne(@Param('id') id: number) {
+  @UseGuards(JwtAuthGuard)
+  async getOne(@Param('id') id: number): Promise<Offer> {
     return this.offersService.findOne(id);
   }
 }

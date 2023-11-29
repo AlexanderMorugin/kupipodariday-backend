@@ -10,13 +10,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Like, Repository } from 'typeorm';
-import * as bycrypt from 'bcrypt';
+import { HashService } from 'src/hash/hash.service';
+import { TUser } from 'src/common/types';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly hashService: HashService,
   ) {}
 
   async findOne(key: string, param: any): Promise<User> {
@@ -25,11 +27,7 @@ export class UsersService {
     return user;
   }
 
-  async hashPassword(password: string) {
-    return bycrypt.hash(password, 10);
-  }
-
-  async findUserByName(username: string) {
+  async findUserByName(username: string): Promise<User> {
     return await this.usersRepository.findOne({
       where: {
         username: username,
@@ -37,7 +35,7 @@ export class UsersService {
     });
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<User> {
     return await this.usersRepository.findOneBy({ email });
   }
 
@@ -54,16 +52,16 @@ export class UsersService {
         'Пользователь с таким e-mail уже существует',
       );
     }
-    createUserDto.password = await this.hashPassword(createUserDto?.password);
+    createUserDto.password = this.hashService.getHash(createUserDto?.password);
     const user = this.usersRepository.create(createUserDto);
     return await this.usersRepository.save(user);
   }
 
-  async update(user: User, updateUserDto: UpdateUserDto) {
+  async update(user: User, updateUserDto: UpdateUserDto): Promise<TUser> {
     const { id } = user;
     const { email, username } = updateUserDto;
     if (updateUserDto.password) {
-      updateUserDto.password = await this.hashPassword(updateUserDto.password);
+      updateUserDto.password = this.hashService.getHash(updateUserDto.password);
     }
     const isExist = (await this.usersRepository.findOne({
       where: [{ email }, { username }],
@@ -89,7 +87,7 @@ export class UsersService {
     }
   }
 
-  async findWishes(id: number) {
+  async findWishes(id: number): Promise<User[]> {
     const users = await this.usersRepository.find({
       relations: { wishes: true },
       where: { id },
@@ -97,7 +95,7 @@ export class UsersService {
     return users;
   }
 
-  async findMany(query: string) {
+  async findMany(query: string): Promise<User[]> {
     const searchResult = await this.usersRepository.find({
       where: [{ email: Like(`%${query}%`) }, { username: Like(`%${query}%`) }],
     });

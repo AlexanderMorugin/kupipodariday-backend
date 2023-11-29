@@ -1,30 +1,11 @@
-import {
-  IsDate,
-  IsInt,
-  IsString,
-  IsUrl,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsString, IsUrl, MaxLength, MinLength } from 'class-validator';
+import { BaseEntity } from 'src/common/base.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Wish } from 'src/wishes/entities/wish.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Wishlist {
-  @PrimaryGeneratedColumn({ name: 'wish-list_id' })
-  @IsInt()
-  id: number;
-
+export class Wishlist extends BaseEntity {
   @Column()
   @IsString()
   @MinLength(1)
@@ -41,12 +22,4 @@ export class Wishlist {
 
   @ManyToOne(() => User)
   owner: User;
-
-  @CreateDateColumn()
-  @IsDate()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  @IsDate()
-  updatedAt: Date;
 }

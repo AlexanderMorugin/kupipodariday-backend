@@ -19,11 +19,14 @@ export class WishesService {
     private readonly wishesRepository: Repository<Wish>,
   ) {}
 
-  async create(createWishDto: CreateWishDto, owner: User) {
+  async create(createWishDto: CreateWishDto, owner: User): Promise<Wish> {
     return await this.wishesRepository.save({ ...createWishDto, owner });
   }
 
-  async findByOrder(order: FindOptionsOrder<Wish>, limit: number) {
+  async findByOrder(
+    order: FindOptionsOrder<Wish>,
+    limit: number,
+  ): Promise<Wish[]> {
     return await this.wishesRepository.find({
       relations: { owner: true },
       order: order,
@@ -31,14 +34,18 @@ export class WishesService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Wish> {
     return await this.wishesRepository.findOne({
       relations: { owner: true, offers: { user: true } },
       where: { id },
     });
   }
 
-  async update(id: number, updateWishDto: UpdateWishDto, userId: number) {
+  async update(
+    id: number,
+    updateWishDto: UpdateWishDto,
+    userId: number,
+  ): Promise<Wish[]> {
     const wish = await this.wishesRepository.findOne({
       relations: { owner: true, offers: true },
       where: { id },
@@ -59,7 +66,7 @@ export class WishesService {
     }
   }
 
-  async delete(id: number, userId: number) {
+  async delete(id: number, userId: number): Promise<Wish> {
     const wish = await this.wishesRepository.findOne({
       relations: { owner: true, offers: true },
       where: { id },
@@ -70,7 +77,7 @@ export class WishesService {
     return await this.wishesRepository.remove(wish);
   }
 
-  async copy(id: number, user: User) {
+  async copy(id: number, user: User): Promise<Wish> {
     const wish = await this.wishesRepository.findOneBy({ id });
     const isAdded = (await this.wishesRepository.findOne({
       where: { owner: { id: user.id }, name: wish.name },
@@ -83,13 +90,13 @@ export class WishesService {
     return await this.wishesRepository.save(wish);
   }
 
-  async findMany(key: string, param: any) {
+  async findMany(key: string, param: any): Promise<Wish[]> {
     return await this.wishesRepository.findBy({
       [key]: param,
     });
   }
 
-  async findManyById(ids: number[]) {
+  async findManyById(ids: number[]): Promise<Wish[]> {
     return await this.wishesRepository.findBy({
       id: In(ids),
     });

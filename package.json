@@ -1,7 +1,7 @@
 {
   "name": "kupipodariday-backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "Бэкенд сервис вишлистов КупиПодариДай",
   "author": "Александр Моругин",
   "private": true,
   "license": "UNLICENSED",
